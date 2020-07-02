@@ -89,7 +89,13 @@ namespace gazebo
             msg.header.stamp = ros::Time::now();
             msg.header.frame_id = "map";
             // pressure increases by 10 kPa/m water depth.
-            msg.fluid_pressure = -z_height * 10000;
+            // pressure decreases roughly 100 Pa/8m in air.
+            double msl_pressure = 101325.0;
+
+            if (z_height > 0)
+                msg.fluid_pressure = msl_pressure - z_height * 12.5;
+            else
+                msg.fluid_pressure = msl_pressure - z_height * 10000;
 
             // generate Gaussian noise sequence using polar form of Box-Muller transformation
             double x1, x2, w, y1;
