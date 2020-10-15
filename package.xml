@@ -18,5 +18,7 @@
     <!-- The export tag contains other, unspecified, tags -->
     <export>
         <gazebo plugin_path="${prefix}/lib" />
+        <gazebo_ros gazebo_model_path="${prefix}/models" />
+        <!-- gazebo_media_path="${prefix}/models" -->
     </export>
 </package>

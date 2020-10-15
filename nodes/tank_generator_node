@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+import rospy
+import os
+from xml.etree import ElementTree
+from xml.dom import minidom
+from hippocampus_common.node import Node
+import tf.transformations
+import uuid
+import rospkg
+import shutil
+from datetime import datetime
+
+
+class TankGeneratorNode(Node):
+    DEFAULT_OUTPUT_DIR = os.path.join(
+        rospkg.RosPack().get_path("hippocampus_sim"), "models")
+
+    def __init__(self, name):
+        super(TankGeneratorNode, self).__init__(name=name)
+
+    def run(self):
+        tag_poses = self.get_param("~tag_poses", None)
+        if not tag_poses:
+            rospy.logfatal(
+                "No poses provided via '~tag_poses' parameter. Exiting...")
+            return False
+        force_write = self.get_param("~force_write", False)
+        output_dir = self.get_param("~output_dir", self.DEFAULT_OUTPUT_DIR)
+        if not os.path.isdir(output_dir):
+            rospy.logwarn("%s does not exist.", output_dir)
+            self.set_param("~output_dir", self.DEFAULT_OUTPUT_DIR)
+        model_name = "apriltag_tank"
+        if os.path.isdir(os.path.join(output_dir, model_name)):
+            if not force_write:
+                rospy.logerr(
+                    "%s already exists in %s. You can use the 'force_write' "
+                    "param to overwrite existing directories.", model_name,
+                    output_dir)
+                return False
+            else:
+                d = os.path.join(output_dir, model_name)
+                shutil.rmtree(d)
+                rospy.loginfo("Deleting already existing directory at '%s'", d)
+        tmp_dir = os.path.join("/tmp", str(uuid.uuid4().hex))
+        tmp_model_dir = os.path.join(tmp_dir, model_name)
+        rospy.loginfo("Creating temporary directory at %s.", tmp_model_dir)
+        try:
+            os.makedirs(tmp_model_dir)
+        except OSError as e:
+            rospy.logfatal("Could not create temporary directory: %s", e)
+            return False
+
+        self.write_model_sdf(tag_poses=tag_poses, model_dir=tmp_model_dir)
+        self.write_model_config(name=model_name,
+                                author="Thies Lennart Alff",
+                                email="thies.lennart.alff@tuhh.de",
+                                model_dir=tmp_model_dir)
+
+        shutil.move(tmp_model_dir, output_dir)
+        return True
+
+    def write_model_sdf(self, tag_poses, model_dir):
+        model_sdf_path = os.path.join(model_dir, "model.sdf")
+        model_sdf_string = self.generate_model_sdf(tag_poses)
+        with open(model_sdf_path, "w") as f:
+            f.write(model_sdf_string)
+
+    def write_model_config(self, name, author, email, model_dir):
+        path = os.path.join(model_dir, "model.config")
+        output = self.generate_model_config(name=name,
+                                            author=author,
+                                            email=email)
+        with open(path, "w") as f:
+            f.write(output)
+
+    def generate_model_config(self, name, author, email):
+        model = ElementTree.Element("model")
+        name_el = ElementTree.SubElement(model, "name")
+        name_el.text = name
+        sdf = ElementTree.SubElement(model, "sdf", dict(version="1.5"))
+        sdf.text = "model.sdf"
+        author_el = ElementTree.SubElement(model, "author")
+        author_name = ElementTree.SubElement(author_el, "name")
+        author_name.text = author
+        mail = ElementTree.SubElement(author_el, "email")
+        mail.text = email
+        descr = ElementTree.SubElement(model, "description")
+        now = datetime.utcnow()
+        descr.text = "This model was auto generated at UTC: {}".format(
+            now.strftime("%d.%m.%Y, %H:%M:%S"))
+
+        string = ElementTree.tostring(model, "utf-8")
+        string = minidom.parseString(string)
+        string = string.toprettyxml(indent="  ")
+        return string
+
+    def generate_model_sdf(self, tags):
+        sdf = ElementTree.Element("sdf", dict(version="1.5"))
+        model = ElementTree.SubElement(sdf, "model", dict(name="Tank"))
+        pose = ElementTree.SubElement(model, "pose")
+        pose.text = "0 0 0 0 0 0"
+        link = ElementTree.SubElement(model, "link", dict(name="base_link"))
+        ElementTree.SubElement(model, "static").text = "true"
+        tags = sorted(tags, key=lambda item: item["id"])
+        for tag in tags:
+            pos = (tag["x"], tag["y"], tag["z"])
+            quat = (tag["qx"], tag["qy"], tag["qz"], tag["qw"])
+            rpy = tf.transformations.euler_from_quaternion(quat)
+            tag_name = "tag36_11_{:05d}".format(tag["id"])
+            self.add_tag(model, tag_name, pos, rpy)
+
+        string = ElementTree.tostring(sdf, "utf-8")
+        string = minidom.parseString(string)
+        string = string.toprettyxml(indent="  ")
+        return string
+
+    def add_tag(self, parent, name, position, rpy):
+        include = ElementTree.SubElement(parent, "include")
+        uri = ElementTree.SubElement(include, "uri")
+        uri.text = "model://{}".format(name)
+        pose = ElementTree.SubElement(include, "pose")
+        pose.text = "{} {} {} {} {} {}".format(position[0], position[1],
+                                               position[2], rpy[0], rpy[1],
+                                               rpy[2])
+        return include
+
+
+if __name__ == "__main__":
+    node = TankGeneratorNode("tank_generator_node")
+    node.run()

@@ -38,26 +38,6 @@
           <izz>0.010717</izz>
         </inertia>
       </inertial>
-      <collision name="base_link_inertia_collision">
-        <pose>0 0 0 0 1.570796 0</pose>
-        <geometry>
-          <cylinder>
-            <radius>0.03</radius>
-            <length>0.36</length>
-          </cylinder>
-        </geometry>
-        <surface>
-          <contact>
-            <ode>
-              <min_depth>0.001</min_depth>
-              <max_vel>0</max_vel>
-            </ode>
-          </contact>
-          <friction>
-            <ode />
-          </friction>
-        </surface>
-      </collision>
       <visual name="base_link_inertia_visual">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
@@ -117,7 +97,7 @@
       <child>barometer_water_link</child>
     </joint>
 
-    <link name="camera_link">
+    <!-- <link name="camera_link">
       <gravity>0</gravity>
       <pose>0.05 0 -0.02 0 1.57 0</pose>
       <inertial>
@@ -134,7 +114,7 @@
       <sensor type="camera" name="camera">
         <update_rate>30.0</update_rate>
         <visualize>true</visualize>
-        <always_on>1</always_on>
+        <always_on>0</always_on>
         <camera name="head">
           <horizontal_fov>2.0</horizontal_fov>
           <image>
@@ -148,15 +128,12 @@
           </clip>
           <noise>
             <type>gaussian</type>
-            <!-- Noise is sampled independently per pixel on each frame.
-                 That pixel's noise value is added to each of its color
-                 channels, which at that point lie in the range [0,1]. -->
             <mean>0.0</mean>
             <stddev>0.1</stddev>
           </noise>
         </camera>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-          <alwaysOn>true</alwaysOn>
+          <alwaysOn>false</alwaysOn>
           <updateRate>0</updateRate>
           <cameraName>camera</cameraName>
           <imageTopicName>image_raw</imageTopicName>
@@ -175,7 +152,7 @@
     <joint name="camera_joint" type="fixed">
       <parent>base_link</parent>
       <child>camera_link</child>
-    </joint>
+    </joint> -->
 
     <!--
         A new link is defined which hold the IMU (e.g. acceleration sensors, ...). For the simulation it is positioned
@@ -204,23 +181,9 @@
     </link>
 
     <!-- IMU joint -->
-    <joint name="uuv_hippocampus/imu_joint" type="revolute">
+    <joint name="uuv_hippocampus/imu_joint" type="fixed">
       <child>uuv_hippocampus/imu_link</child>
       <parent>base_link</parent>
-      <axis>
-        <xyz>1 0 0</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0</upper>
-          <effort>0</effort>
-          <velocity>0</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
-      </axis>
     </joint>
 
     <!--
@@ -243,23 +206,6 @@
           <izz>0.000274004</izz>
         </inertia>
       </inertial>
-      <collision name="rotor_0_collision">
-        <pose>0 0 0.02 0 0 0</pose>
-        <geometry>
-          <cylinder>
-            <radius>0.02</radius>
-            <length>0.06</length>
-          </cylinder>
-        </geometry>
-        <surface>
-          <contact>
-            <ode />
-          </contact>
-          <friction>
-            <ode />
-          </friction>
-        </surface>
-      </collision>
       <visual name="rotor_0_visual">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
@@ -313,23 +259,6 @@
           <izz>0.000274004</izz>
         </inertia>
       </inertial>
-      <collision name="rotor_1_collision">
-        <pose>0 0 0.02 0 0 0</pose>
-        <geometry>
-          <cylinder>
-            <radius>0.02</radius>
-            <length>0.06</length>
-          </cylinder>
-        </geometry>
-        <surface>
-          <contact>
-            <ode />
-          </contact>
-          <friction>
-            <ode />
-          </friction>
-        </surface>
-      </collision>
       <visual name="rotor_1_visual">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
@@ -383,23 +312,6 @@
           <izz>0.000274004</izz>
         </inertia>
       </inertial>
-      <collision name="rotor_2_collision">
-        <pose>0 0 0.02 0 0 0</pose>
-        <geometry>
-          <cylinder>
-            <radius>0.02</radius>
-            <length>0.06</length>
-          </cylinder>
-        </geometry>
-        <surface>
-          <contact>
-            <ode />
-          </contact>
-          <friction>
-            <ode />
-          </friction>
-        </surface>
-      </collision>
       <visual name="rotor_2_visual">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
@@ -453,23 +365,6 @@
           <izz>0.000274004</izz>
         </inertia>
       </inertial>
-      <collision name="rotor_3_collision">
-        <pose>0 0 0.02 0 0 0</pose>
-        <geometry>
-          <cylinder>
-            <radius>0.02</radius>
-            <length>0.06</length>
-          </cylinder>
-        </geometry>
-        <surface>
-          <contact>
-            <ode />
-          </contact>
-          <friction>
-            <ode />
-          </friction>
-        </surface>
-      </collision>
       <visual name="rotor_3_visual">
         <pose>0 0 0 0 0 0</pose>
         <geometry>
@@ -625,10 +520,10 @@
       <rotorVelocitySlowdownSim>0.05</rotorVelocitySlowdownSim>
     </plugin>
 
-    <plugin name="gps_plugin" filename="libgazebo_gps_plugin.so">
+    <!-- <plugin name="gps_plugin" filename="libgazebo_gps_plugin.so">
       <robotNamespace />
       <gpsNoise>true</gpsNoise>
-    </plugin>
+    </plugin> -->
 
     <plugin name="magnetometer_plugin" filename="libgazebo_magnetometer_plugin.so">
       <robotNamespace />
