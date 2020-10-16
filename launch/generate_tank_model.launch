@@ -1,6 +1,8 @@
 <launch>
+    <arg name="force" default="false" />
     <node name="tank_generator" pkg="hippocampus_sim" type="tank_generator_node" output="screen">
         <rosparam command="load" file="$(find mu_auv_localization)/config/tag_poses.yaml" />
-        <rosparam param="size">{x: 1.7, y:3.4, z:1.5}</rosparam>
+        <rosparam param="size">{x: 1.7, y: 3.4, z: 1.5}</rosparam>
+        <rosparam param="force_write">$(arg force)</rosparam>
     </node>
 </launch>

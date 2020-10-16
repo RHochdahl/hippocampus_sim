@@ -9,7 +9,6 @@ import glob
 import argparse
 import errno
 import rospy
-from datetime import datetime
 
 TAG_REPO_URL = "https://github.com/HippoCampusRobotics/apriltags.git"
 TAG_SIZE_X = 0.096
@@ -131,9 +130,7 @@ def create_model_config(tag_name, tag_dir):
     email.text = "thies.lennart.alff@tuhh.de"
 
     desccr = ElementTree.SubElement(model, "description")
-    now = datetime.utcnow()
-    descr.text = "This model was auto generated at UTC: {}".format(
-        now.strftime("%d.%m.%Y, %H:%M:%S"))
+    descr.text = "This model was auto generated."
     string = ElementTree.tostring(model, "utf-8")
     string = minidom.parseString(string)
     string = string.toprettyxml(indent="  ")

@@ -1,0 +1,3 @@
+<launch>
+    <node name="tank_spawner" output="screen" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find hippocampus_sim)/models/apriltag_tank/model.sdf -model apriltag_tank" />
+</launch>

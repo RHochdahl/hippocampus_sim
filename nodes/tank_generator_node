@@ -14,6 +14,8 @@ from datetime import datetime
 class TankGeneratorNode(Node):
     DEFAULT_OUTPUT_DIR = os.path.join(
         rospkg.RosPack().get_path("hippocampus_sim"), "models")
+    DEFAULT_WALL_THICKNESS = 0.1
+    DEFAULT_SIZE = dict(x=1.0, y=1.0, z=1.0)
 
     def __init__(self, name):
         super(TankGeneratorNode, self).__init__(name=name)
@@ -85,9 +87,7 @@ class TankGeneratorNode(Node):
         mail = ElementTree.SubElement(author_el, "email")
         mail.text = email
         descr = ElementTree.SubElement(model, "description")
-        now = datetime.utcnow()
-        descr.text = "This model was auto generated at UTC: {}".format(
-            now.strftime("%d.%m.%Y, %H:%M:%S"))
+        descr.text = "This model was auto generated."
 
         string = ElementTree.tostring(model, "utf-8")
         string = minidom.parseString(string)
@@ -100,6 +100,7 @@ class TankGeneratorNode(Node):
         pose = ElementTree.SubElement(model, "pose")
         pose.text = "0 0 0 0 0 0"
         link = ElementTree.SubElement(model, "link", dict(name="base_link"))
+        self.add_walls(link)
         ElementTree.SubElement(model, "static").text = "true"
         tags = sorted(tags, key=lambda item: item["id"])
         for tag in tags:
@@ -113,6 +114,51 @@ class TankGeneratorNode(Node):
         string = minidom.parseString(string)
         string = string.toprettyxml(indent="  ")
         return string
+
+    def add_walls(self, parent):
+        wall_thickness = self.get_param("~wall_thickness",
+                                        self.DEFAULT_WALL_THICKNESS)
+        size = self.get_param("~size", default=self.DEFAULT_SIZE)
+
+        # Wall order
+        #
+        #  ---- 2 ----
+        # |           |
+        # |           |
+        # 3           4
+        # |           |
+        # |           |
+        #  ---- 1 ----
+
+        def wall_elements(i, size, pos, parent):
+            name = "wall_{}".format(i)
+            visual = ElementTree.SubElement(parent, "visual", dict(name=name))
+            pose = ElementTree.SubElement(visual, "pose")
+            pose.text = "{} {} {} 0 0 0".format(pos[0], pos[1], pos[2])
+            geometry = ElementTree.SubElement(visual, "geometry")
+            box = ElementTree.SubElement(geometry, "box")
+            box_size = ElementTree.SubElement(box, "size")
+            box_size.text = "{} {} {}".format(size[0], size[1], size[2])
+
+        # Wall 1
+        xyz = (size["x"], wall_thickness, size["z"])
+        pos = (xyz[0] / 2.0, -xyz[1] / 2.0, -xyz[2] / 2.0)
+        wall_elements(1, xyz, pos, parent)
+
+        # Wall 2
+        xyz = (size["x"], wall_thickness, size["z"])
+        pos = (xyz[0] / 2.0, size["y"] + xyz[1] / 2.0, -xyz[2] / 2.0)
+        wall_elements(2, xyz, pos, parent)
+
+        # Wall 3
+        xyz = (wall_thickness, size["y"] + 2 * wall_thickness, size["z"])
+        pos = (-xyz[0] / 2, size["y"] / 2.0, -xyz[2] / 2.0)
+        wall_elements(3, xyz, pos, parent)
+
+        # Wall 4
+        xyz = (wall_thickness, size["y"] + 2 * wall_thickness, size["z"])
+        pos = (size["x"] + xyz[0] / 2, size["y"] / 2.0, -xyz[2] / 2.0)
+        wall_elements(4, xyz, pos, parent)
 
     def add_tag(self, parent, name, position, rpy):
         include = ElementTree.SubElement(parent, "include")
