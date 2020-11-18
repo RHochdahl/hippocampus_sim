@@ -11,8 +11,10 @@ import errno
 import rospy
 
 TAG_REPO_URL = "https://github.com/HippoCampusRobotics/apriltags.git"
-TAG_SIZE_X = 0.096
-TAG_SIZE_Y = 0.096
+# the apriltag is 8x8 pixels with an 1-pixel outline.
+# so a total size of 0.12x0.12 results in an actual tag size of 0.096x0.096
+TAG_SIZE_X = 0.12
+TAG_SIZE_Y = 0.12
 TAG_SIZE_Z = 0.005
 
 BASE_DAE = """
@@ -129,7 +131,7 @@ def create_model_config(tag_name, tag_dir):
     email = ElementTree.SubElement(author, "email")
     email.text = "thies.lennart.alff@tuhh.de"
 
-    desccr = ElementTree.SubElement(model, "description")
+    descr = ElementTree.SubElement(model, "description")
     descr.text = "This model was auto generated."
     string = ElementTree.tostring(model, "utf-8")
     string = minidom.parseString(string)
@@ -195,7 +197,7 @@ material {}/Image
 
             texture_unit
             {{
-                texture texture.png
+                texture {}.png
                 tex_address_mode clamp
                 filtering none
             }}
@@ -203,14 +205,14 @@ material {}/Image
 
     }}
 }}
-""".format(tag_name)
+""".format(tag_name, tag_name)
     with open(file_path, "w") as f:
         f.write(string)
 
 
 def copy_textures(textures_path, tag_name):
     src_file_name = "{}.png".format(tag_name)
-    dst_file_name = "texture.png"
+    dst_file_name = "{}.png".format(tag_name)
     src_path = os.path.join("/tmp", src_file_name)
     dst_path = os.path.join(textures_path, dst_file_name)
     if os.path.isfile(src_path):

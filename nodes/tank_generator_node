@@ -135,6 +135,8 @@ class TankGeneratorNode(Node):
             visual = ElementTree.SubElement(parent, "visual", dict(name=name))
             pose = ElementTree.SubElement(visual, "pose")
             pose.text = "{} {} {} 0 0 0".format(pos[0], pos[1], pos[2])
+            transparency = ElementTree.SubElement(visual, "transparency")
+            transparency.text = "0.8"
             geometry = ElementTree.SubElement(visual, "geometry")
             box = ElementTree.SubElement(geometry, "box")
             box_size = ElementTree.SubElement(box, "size")

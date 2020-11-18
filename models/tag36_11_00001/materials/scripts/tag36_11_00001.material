@@ -11,7 +11,7 @@ material tag36_11_00001/Image
 
             texture_unit
             {
-                texture texture.png
+                texture tag36_11_00001.png
                 tex_address_mode clamp
                 filtering none
             }

@@ -14,7 +14,7 @@
         <geometry>
           <mesh>
             <uri>model://tag36_11_00022/meshes/cube.dae</uri>
-            <scale>0.096 0.096 0.005</scale>
+            <scale>0.12 0.12 0.005</scale>
           </mesh>
         </geometry>
       </visual>
