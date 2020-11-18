@@ -32,9 +32,6 @@
             <direction>-0.001 0.001 -0.9</direction>
         </light>
 
-        <include>
-            <uri>model://apriltag_tank</uri>
-        </include>
     </world>
 
 </sdf>

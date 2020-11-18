@@ -1,0 +1,45 @@
+<launch>
+    <arg name="gui" default="true" />
+    <arg name="verbose" default="true" />
+    <arg name="rviz" default="false" />
+    <!-- start gazebo with the specified world -->
+    <include file="$(find hippocampus_sim)/launch/gazebo_base.launch">
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="verbose" value="$(arg verbose)" />
+    </include>
+
+    <include file="$(find hippocampus_sim)/launch/spawn_apriltag_tank.launch" />
+
+    <arg name="rviz_config" default="$(find hippocampus_sim)/config/default.rviz" />
+
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" output="screen" />
+
+    <!-- use the group tag to launch nodes in a namespace -->
+    <group ns="uuv00">
+        <!-- MAVROS and vehicle configs -->
+        <arg name="ID" value="0" />
+        <arg name="bind_port" value="$(eval 14540 + arg('ID'))" />
+        <arg name="remote_port" value="$(eval 14580 + arg('ID'))" />
+        <arg name="fcu_url" default="udp://:$(arg bind_port)@localhost:$(arg remote_port)" />
+        <!-- PX4 SITL and vehicle spawn -->
+        <include file="$(find hippocampus_sim)/launch/spawn_uuv_hippocampus.launch">
+            <arg name="x" value="0.3" />
+            <arg name="y" value="0.3" />
+            <arg name="z" value="0" />
+            <arg name="R" value="0" />
+            <arg name="P" value="0" />
+            <arg name="Y" value="1.57" />
+            <arg name="ID" value="$(arg ID)" />
+        </include>
+        <!-- MAVROS -->
+        <include file="$(find mavros)/launch/px4.launch">
+            <arg name="fcu_url" value="$(arg fcu_url)" />
+            <arg name="gcs_url" value="" />
+            <arg name="tgt_system" value="$(eval 1 + arg('ID'))" />
+            <arg name="tgt_component" value="1" />
+        </include>
+
+        <node if="$(arg rviz)" name="rviz_visualizer" pkg="hippocampus_sim" type="rviz_visualizer" output="screen" />
+    </group>
+
+</launch>
