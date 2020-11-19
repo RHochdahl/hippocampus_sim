@@ -2,6 +2,15 @@
     <arg name="gui" default="true" />
     <arg name="verbose" default="true" />
     <arg name="rviz" default="false" />
+
+    <arg name="x" default="0.3" />
+    <arg name="y" default="0.3" />
+    <arg name="z" default="0.0" />
+    <arg name="Y" default="1.57" />
+    <arg name="P" default="0.0" />
+    <arg name="R" default="0.0" />
+    
+
     <!-- start gazebo with the specified world -->
     <include file="$(find hippocampus_sim)/launch/gazebo_base.launch">
         <arg name="gui" value="$(arg gui)" />
@@ -23,12 +32,12 @@
         <arg name="fcu_url" default="udp://:$(arg bind_port)@localhost:$(arg remote_port)" />
         <!-- PX4 SITL and vehicle spawn -->
         <include file="$(find hippocampus_sim)/launch/spawn_uuv_hippocampus.launch">
-            <arg name="x" value="0.3" />
-            <arg name="y" value="0.3" />
-            <arg name="z" value="0" />
-            <arg name="R" value="0" />
-            <arg name="P" value="0" />
-            <arg name="Y" value="1.57" />
+            <arg name="x" value="$(arg x)" />
+            <arg name="y" value="$(arg y)" />
+            <arg name="z" value="$(arg z)" />
+            <arg name="R" value="$(arg R)" />
+            <arg name="P" value="$(arg P)" />
+            <arg name="Y" value="$(arg Y)" />
             <arg name="ID" value="$(arg ID)" />
         </include>
         <!-- MAVROS -->
