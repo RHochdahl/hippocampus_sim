@@ -95,7 +95,7 @@
             <child>barometer_water_link</child>
         </joint>
 
-        <link name="camera_link">
+        <link name="vertical_camera/camera_link">
             <gravity>0</gravity>
             <pose>0.05 0 -0.02 0 1.57 0</pose>
             <inertial>
@@ -133,10 +133,10 @@
                 <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
                     <alwaysOn>false</alwaysOn>
                     <updateRate>0</updateRate>
-                    <cameraName>camera</cameraName>
+                    <cameraName>vertical_camera</cameraName>
                     <imageTopicName>image_raw</imageTopicName>
                     <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-                    <frameName>camera_frame</frameName>
+                    <frameName>vertical_camera/camera_frame</frameName>
                     <hackBaseline>0</hackBaseline>
                     <distortionK1>0.0</distortionK1>
                     <distortionK2>0.0</distortionK2>
@@ -149,7 +149,7 @@
 
         <joint name="camera_joint" type="fixed">
             <parent>base_link</parent>
-            <child>camera_link</child>
+            <child>vertical_camera/camera_link</child>
         </joint>
 
         <!--

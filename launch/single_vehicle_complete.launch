@@ -1,4 +1,7 @@
 <launch>
+    <!-- vehicle name (= namespace vehicle specific nodes will be launched in) -->
+    <arg name="vehicle_name" default="uuv00" />
+
     <arg name="gui" default="true" />
     <arg name="verbose" default="true" />
     <arg name="rviz" default="false" />
@@ -24,7 +27,7 @@
     <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" output="screen" />
 
     <!-- use the group tag to launch nodes in a namespace -->
-    <group ns="uuv00">
+    <group ns="$(arg vehicle_name)">
         <!-- MAVROS and vehicle configs -->
         <arg name="ID" value="0" />
         <arg name="bind_port" value="$(eval 14540 + arg('ID'))" />
