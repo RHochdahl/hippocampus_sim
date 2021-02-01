@@ -32,6 +32,10 @@
             <direction>-0.001 0.001 -0.9</direction>
         </light>
 
+        <scene>
+            <shadows>0</shadows>
+        </scene>
+
     </world>
 
 </sdf>
