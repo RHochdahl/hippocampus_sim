@@ -1,7 +1,7 @@
 <launch>
     <arg name="vehicle_name" default="uuv00" />
 
-    <include file="$(find hippocampus_sim)/launch/single_vehicle_complete.launch">
+    <include file="$(find hippocampus_sim)/launch/top_single_vehicle_complete.launch">
       <arg name="vehicle_name" value="$(arg vehicle_name)" />
     </include>
 

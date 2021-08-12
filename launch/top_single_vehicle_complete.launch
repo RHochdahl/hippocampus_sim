@@ -15,12 +15,12 @@
     
 
     <!-- start gazebo with the specified world -->
-    <include file="$(find hippocampus_sim)/launch/gazebo_base.launch">
+    <include file="$(find hippocampus_sim)/launch/inc_gazebo_base.launch">
         <arg name="gui" value="$(arg gui)" />
         <arg name="verbose" value="$(arg verbose)" />
     </include>
 
-    <include file="$(find hippocampus_sim)/launch/spawn_apriltag_tank.launch" />
+    <include file="$(find hippocampus_sim)/launch/inc_spawn_apriltag_tank.launch" />
 
     <arg name="rviz_config" default="$(find hippocampus_sim)/config/default.rviz" />
 
@@ -34,7 +34,7 @@
         <arg name="remote_port" value="$(eval 14580 + arg('ID'))" />
         <arg name="fcu_url" default="udp://:$(arg bind_port)@localhost:$(arg remote_port)" />
         <!-- PX4 SITL and vehicle spawn -->
-        <include file="$(find hippocampus_sim)/launch/spawn_uuv_hippocampus.launch">
+        <include file="$(find hippocampus_sim)/launch/inc_spawn_uuv_hippocampus.launch">
             <arg name="x" value="$(arg x)" />
             <arg name="y" value="$(arg y)" />
             <arg name="z" value="$(arg z)" />
