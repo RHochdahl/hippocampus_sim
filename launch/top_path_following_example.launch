@@ -1,20 +1,21 @@
 <launch>
-    <arg name="vehicle_name" default="uuv00" />
+  <arg name="vehicle_name" default="uuv00" />
 
     <include file="$(find hippocampus_sim)/launch/top_single_vehicle_complete.launch">
-      <arg name="vehicle_name" value="$(arg vehicle_name)" />
+    <arg name="vehicle_name" value="$(arg vehicle_name)" />
+  </include>
+
+  <!-- launch robot specific nodes in namespace -->
+  <group ns="$(arg vehicle_name)">
+    <!-- path description, path follower, depth control, attitude mixer -->
+    <include file="$(find control)/launch/path_tracking.launch">
+      <arg name="use_ground_truth" value="true" />
+      <arg name="use_external_controller" value="false" />
     </include>
 
-    <!-- launch robot specific nodes in namespace -->
-    <group ns="$(arg vehicle_name)">
-      <!-- path description, path follower, depth control, attitude mixer -->
-      <include file="$(find control)/launch/attitude_control.launch">
-         <arg name="use_ground_truth" value="true" />
-      </include>
+    <!-- add additional vehicle specific nodes here, for example:  -->
+    <!-- Convert orientation from quaternion to roll, pitch, yaw for visualization/debugging-->
+    <include file="$(find hippocampus_common)/launch/quat_to_rpy.launch" />
 
-      <!-- add additional vehicle specific nodes here, for example:  -->  
-      <!-- Convert orientation from quaternion to roll, pitch, yaw for visualization/debugging-->
-      <include file="$(find hippocampus_common)/launch/quat_to_rpy.launch"/>
-    
-    </group>
-  </launch>
+  </group>
+</launch>
