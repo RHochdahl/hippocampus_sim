@@ -203,10 +203,10 @@
         <!-- CCW 1-->
         <!-- rotor_0 link -->
         <link name='rotor_0'>
-            <pose>-0.05 0.0481 0.0481 0 1.570796 0</pose>
+            <pose>0 0.0481 0.0481 0 1.570796 0</pose>
             <inertial>
                 <pose>0 0 0 0 -0 0</pose>
-                <mass>0.005</mass>
+                <mass>1e-8</mass>
                 <inertia>
                     <ixx>9.75e-07</ixx>
                     <ixy>0</ixy>
@@ -255,10 +255,10 @@
         <!-- CW 2 -->
         <!-- rotor_1 link -->
         <link name='rotor_1'>
-            <pose>-0.05 -0.0481 0.0481 0 1.570796 0</pose>
+            <pose>0 -0.0481 0.0481 0 1.570796 0</pose>
             <inertial>
                 <pose>0 0 0 0 -0 0</pose>
-                <mass>0.005</mass>
+                <mass>1e-8</mass>
                 <inertia>
                     <ixx>9.75e-07</ixx>
                     <ixy>0</ixy>
@@ -307,10 +307,10 @@
         <!-- CCW 3 -->
         <!-- rotor_2 link -->
         <link name='rotor_2'>
-            <pose>-0.05 -0.0481 -0.0481 0 1.570796 0</pose>
+            <pose>0 -0.0481 -0.0481 0 1.570796 0</pose>
             <inertial>
                 <pose>0 0 0 0 -0 0</pose>
-                <mass>0.005</mass>
+                <mass>1e-8</mass>
                 <inertia>
                     <ixx>9.75e-07</ixx>
                     <ixy>0</ixy>
@@ -359,10 +359,10 @@
         <!-- CW 4 -->
         <!-- rotor_3 link -->
         <link name='rotor_3'>
-            <pose>-0.05 0.0481 -0.0481 0 1.570796 0</pose>
+            <pose>0 0.0481 -0.0481 0 1.570796 0</pose>
             <inertial>
                 <pose>0 0 0 0 -0 0</pose>
-                <mass>0.005</mass>
+                <mass>1e-8</mass>
                 <inertia>
                     <ixx>9.75e-07</ixx>
                     <ixy>0</ixy>
@@ -439,7 +439,7 @@
         <plugin name='uuv_forces' filename='libgazebo_uuv_plugin.so'>
             <buoyancy>
                 <link_name>base_link</link_name>
-                <origin>0 0 0.01</origin>
+                <origin>0 0 0</origin>
                 <compensation>1.01</compensation>
                 <height_scale_limit>0.05</height_scale_limit>
             </buoyancy>
@@ -462,7 +462,7 @@
             <timeConstantDown>0.025</timeConstantDown>
             <maxRotVelocity>800</maxRotVelocity>
             <motorConstant>1.1e-05</motorConstant>
-            <momentConstant>0.0024</momentConstant>
+            <momentConstant>0.024</momentConstant>
             <rotorDragCoefficient>0.0</rotorDragCoefficient>
             <rollingMomentCoefficient>0.0</rollingMomentCoefficient>
             <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
@@ -480,7 +480,7 @@
             <timeConstantDown>0.025</timeConstantDown>
             <maxRotVelocity>800</maxRotVelocity>
             <motorConstant>-1.1e-05</motorConstant>
-            <momentConstant>0.0024</momentConstant>
+            <momentConstant>0.024</momentConstant>
             <rotorDragCoefficient>0.0</rotorDragCoefficient>
             <rollingMomentCoefficient>0.0</rollingMomentCoefficient>
             <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
@@ -498,7 +498,7 @@
             <timeConstantDown>0.025</timeConstantDown>
             <maxRotVelocity>800</maxRotVelocity>
             <motorConstant>1.1e-05</motorConstant>
-            <momentConstant>0.0024</momentConstant>
+            <momentConstant>0.024</momentConstant>
             <rotorDragCoefficient>0.0</rotorDragCoefficient>
             <rollingMomentCoefficient>0.0</rollingMomentCoefficient>
             <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
@@ -516,7 +516,7 @@
             <timeConstantDown>0.025</timeConstantDown>
             <maxRotVelocity>800</maxRotVelocity>
             <motorConstant>-1.1e-05</motorConstant>
-            <momentConstant>0.0024</momentConstant>
+            <momentConstant>0.024</momentConstant>
             <rotorDragCoefficient>0.0</rotorDragCoefficient>
             <rollingMomentCoefficient>0.0</rollingMomentCoefficient>
             <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
