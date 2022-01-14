@@ -1,7 +1,7 @@
 <launch>
   <arg name="vehicle_name" default="uuv00" />
 
-    <include file="$(find hippocampus_sim)/launch/top_single_vehicle_complete.launch">
+  <include file="$(find hippocampus_sim)/launch/top_single_vehicle_complete.launch">
     <arg name="vehicle_name" value="$(arg vehicle_name)" />
   </include>
 
@@ -15,7 +15,7 @@
 
     <!-- add additional vehicle specific nodes here, for example:  -->
     <!-- Convert orientation from quaternion to roll, pitch, yaw for visualization/debugging-->
-    <include file="$(find hippocampus_common)/launch/quat_to_rpy.launch" />
+    <include file="$(find hippocampus_common)/launch/inc_quat_to_rpy.launch" />
 
   </group>
 </launch>
