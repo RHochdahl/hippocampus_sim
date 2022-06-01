@@ -30,7 +30,7 @@ catkin_package(
 )
 
 catkin_install_python(PROGRAMS
-  nodes/rviz_visualizer
+  nodes/rviz_visualizer_node
   nodes/tank_generator_node
   scripts/generate_tag_models
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

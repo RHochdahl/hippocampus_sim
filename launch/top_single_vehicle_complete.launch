@@ -51,7 +51,7 @@
             <arg name="tgt_component" value="1" />
         </include>
 
-        <node if="$(arg rviz)" name="rviz_visualizer" pkg="hippocampus_sim" type="rviz_visualizer" output="screen" />
+        <node if="$(arg rviz)" name="rviz_visualizer" pkg="hippocampus_sim" type="rviz_visualizer_node" output="screen" />
     </group>
 
 </launch>
