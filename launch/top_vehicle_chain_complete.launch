@@ -1,0 +1,41 @@
+<launch>
+    <!-- vehicle name (= namespace vehicle specific nodes will be launched in) -->
+    <arg name="gui" default="true" />
+    <arg name="verbose" default="true" />
+    <arg name="rviz" default="false" />
+
+    <arg name="num_vehicles" default="2" />
+
+    <arg name="x" default="0.3" />
+    <arg name="y" default="0.8" />
+    <arg name="z" default="0.0" />
+    <arg name="Y" default="1.57" />
+    <arg name="P" default="0.0" />
+    <arg name="R" default="0.0" />
+    
+
+    <!-- start gazebo with the specified world -->
+    <include file="$(find hippocampus_sim)/launch/top_environment.launch">
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="verbose" value="$(arg verbose)" />
+        <arg name="rviz" value="$(arg rviz)" />
+    </include>
+
+    <!-- start sitl for all vehicles -->
+    <include file="$(find hippocampus_sim)/launch/recursive_vehicle_complete.launch">
+        <arg name="num_vehicles" value="$(arg num_vehicles)" />
+    </include>
+
+
+    <node if="$(arg rviz)" name="rviz_visualizer" pkg="hippocampus_sim" type="rviz_visualizer_node" output="screen" />
+
+
+    <arg name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles)" />
+    <param command="$(arg cmd)" name="model_description" />
+
+    <arg name="vehicle" value="uuv_hippocampus_chain" />
+
+    <node name="$(arg vehicle)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-sdf -param model_description -model uuv_hippocampus_chain -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
+
+
+</launch>

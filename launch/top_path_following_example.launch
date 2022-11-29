@@ -1,21 +1,26 @@
 <launch>
-  <arg name="vehicle_name" default="uuv00" />
+    <arg name="launch_env" default="true" />
 
-  <include file="$(find hippocampus_sim)/launch/top_single_vehicle_complete.launch">
-    <arg name="vehicle_name" value="$(arg vehicle_name)" />
-  </include>
+    <arg name="ID" default="0" />
+    <arg name="vehicle_name" default="$(eval 'uuv' + str(arg('ID')).zfill(2))" />
 
-  <!-- launch robot specific nodes in namespace -->
-  <group ns="$(arg vehicle_name)">
-    <!-- path description, path follower, depth control, attitude mixer -->
-    <include file="$(find control)/launch/inc_path_tracking.launch">
-      <arg name="use_ground_truth" value="true" />
-      <arg name="use_external_controller" value="false" />
+    <include file="$(find hippocampus_sim)/launch/top_single_vehicle_complete.launch">
+        <arg name="launch_env" value="$(arg launch_env)" />
+        <arg name="vehicle_name" value="$(arg vehicle_name)" />
+        <arg name="ID" value="$(arg ID)" />
     </include>
 
-    <!-- add additional vehicle specific nodes here, for example:  -->
-    <!-- Convert orientation from quaternion to roll, pitch, yaw for visualization/debugging-->
-    <include file="$(find hippocampus_common)/launch/inc_quat_to_rpy.launch" />
+    <!-- launch robot specific nodes in namespace -->
+    <group ns="$(arg vehicle_name)">
+        <!-- path description, path follower, depth control, attitude mixer -->
+        <include file="$(find control)/launch/inc_path_tracking.launch">
+        <arg name="use_ground_truth" value="true" />
+        <arg name="use_external_controller" value="false" />
+        </include>
 
-  </group>
+        <!-- add additional vehicle specific nodes here, for example:  -->
+        <!-- Convert orientation from quaternion to roll, pitch, yaw for visualization/debugging-->
+        <include file="$(find hippocampus_common)/launch/inc_quat_to_rpy.launch" />
+
+    </group>
 </launch>

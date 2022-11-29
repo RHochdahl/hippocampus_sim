@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import numpy as np
+
+
+class VehicleChainConstructor:
+    __resDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../res"))
+    __sdfPathRobot = os.path.abspath(os.path.join(__resDir, "uuv_hippocampus_template.sdf"))
+    __sdfPathJoint = os.path.abspath(os.path.join(__resDir, "uuv_joint_template.sdf"))
+    __sdfPathFrame = os.path.abspath(os.path.join(__resDir, "sdf_frame.sdf"))
+    __sdfTemplateRobot = ""
+    __sdfTemplateJoint = ""
+    __sdfTemplateFrame = ""
+    __startTCP = 4560
+    __startUDP = 14560
+    __robot2Joint = -0.19
+    __robot2Robot = -0.55
+    __numVehicles = 2
+
+
+    def __init__(self, args):
+        while (len(args) > 0):
+            if (args[0] == "-n"):
+                self.__numVehicles = int(args[1])
+                del args[:1]
+            else:
+                del args[0]
+
+        self.__loadTemplates()
+        self.__writeSDF()
+
+
+    def __loadTemplates(self):
+        self.__sdfTemplateRobot = open(self.__sdfPathRobot, "r").read()
+        self.__sdfTemplateJoint = open(self.__sdfPathJoint, "r").read()
+        self.__sdfTemplateFrame = open(self.__sdfPathFrame, "r").read()
+
+    def __addVehicle(self, id):
+        """
+        to be modified:
+            $(vehicle_name)
+            $(vehicle_pose)
+            $(mavlink_tcp_port)
+            $(mavlink_udp_port)
+        """
+        sdf = self.__sdfTemplateRobot
+        name = self.__getName('uuv', id)
+        tcp = self.__startTCP + id
+        udp = self.__startUDP + id
+        pose = id * self.__robot2Robot * np.array([1, 0, 0, 0, 0, 0])
+        sdf = sdf.replace("$(vehicle_name)", name)
+        sdf = sdf.replace("$(vehicle_pose)", self.__pose2Str(pose))
+        sdf = sdf.replace("$(mavlink_tcp_port)", str(tcp))
+        sdf = sdf.replace("$(mavlink_udp_port)", str(udp))
+        sys.stdout.write(sdf)
+
+    def __addJoint(self, id, nextId):
+        """
+        to be modified:
+            $(joint_name)
+            $(joint_pose)
+            $(vehicle_name_0)
+            $(vehicle_name_1)
+        """
+        sdf = self.__sdfTemplateJoint
+        name = self.__getName('joint', id)
+        prevRobotName = self.__getName('uuv', id)
+        nextRobotName = self.__getName('uuv', nextId)
+        pose = (id * self.__robot2Robot + self.__robot2Joint) * np.array([1, 0, 0, 0, 0, 0]) + np.array([0, 0, 0, 0, 0, np.pi])
+        sdf = sdf.replace("$(joint_name)", name)
+        sdf = sdf.replace("$(joint_pose)", self.__pose2Str(pose))
+        sdf = sdf.replace("$(vehicle_name_0)", prevRobotName)
+        sdf = sdf.replace("$(vehicle_name_1)", nextRobotName)
+        sys.stdout.write(sdf)
+
+    def __getName(self, prefix, id):
+        return prefix + str(id).zfill(len(str( self.__numVehicles)))
+
+    def __pose2Str(self, pose):
+        poseStr = str(pose[0])
+        for i in range(1, pose.size):
+            poseStr += " " + str(pose[i])
+        return poseStr
+
+    def __writeSDF(self):
+
+        frameLines = self.__sdfTemplateFrame.split("$(content)")
+        if len(frameLines) != 2:
+            raise RuntimeError("sdf frame template broken")
+        sys.stdout.write(frameLines[0])
+
+        self.__addVehicle(0)
+        for vehicleID in range(1,  self.__numVehicles):
+            self.__addVehicle(vehicleID)
+            self.__addJoint(vehicleID-1, vehicleID)
+
+        sys.stdout.write(frameLines[1])
+
+
+if __name__ == "__main__":
+    VehicleChainConstructor(sys.argv)

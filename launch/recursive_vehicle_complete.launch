@@ -1,0 +1,41 @@
+<launch>
+    <!--
+        This starts mavros and px4_sitl in for loop like "for ID in range($(arg ID), $(arg num_vehicles))"
+        Note that "num_vehicles" is not necessarily the number of vehicles but the maximum vehicle ID minus 1
+    -->
+
+    <arg name="ID" default="0" />
+    <arg name="num_vehicles" />
+
+
+    <group if="$(eval arg('ID') &#60; arg('num_vehicles'))" >
+
+        <arg name="vehicle_name" value="$(eval 'uuv' + str(arg('ID')).zfill(len(str(arg('num_vehicles')))))" />
+
+        <!-- use the group tag to launch nodes in a namespace -->
+        <group ns="$(arg vehicle_name)">
+            <!-- MAVROS and vehicle configs -->
+            <arg name="bind_port" value="$(eval 14540 + arg('ID'))" />
+            <arg name="remote_port" value="$(eval 14580 + arg('ID'))" />
+            <arg name="fcu_url" default="udp://:$(arg bind_port)@localhost:$(arg remote_port)" />
+            <!-- PX4 SITL and vehicle spawn -->
+            <include file="$(find hippocampus_sim)/launch/inc_run_px4_sitl.launch">
+                <arg name="ID" value="$(arg ID)" />
+            </include>
+            <!-- MAVROS -->
+            <include file="$(find mavros)/launch/px4.launch">
+                <arg name="fcu_url" value="$(arg fcu_url)" />
+                <arg name="gcs_url" value="" />
+                <arg name="tgt_system" value="$(eval 1 + arg('ID'))" />
+                <arg name="tgt_component" value="1" />
+            </include>
+        </group>
+    
+        <include file="$(find hippocampus_sim)/launch/recursive_vehicle_complete.launch">
+            <arg name="ID" value="$(eval arg('ID') + 1)" />
+            <arg name="num_vehicles" value="$(arg num_vehicles)" />
+        </include>
+
+    </group>
+
+</launch>

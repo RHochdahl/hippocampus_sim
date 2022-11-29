@@ -1,0 +1,16 @@
+<include>
+    <name>$(joint_name)</name>
+    <uri>model://uuv_hippocampus_joint</uri>
+    <pose>$(joint_pose)</pose>
+</include>
+
+<joint name="$(joint_name)_0" type="fixed">
+    <parent>$(vehicle_name_0)::base_link</parent>
+    <child>$(joint_name)::base_link</child>
+    <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
+</joint>
+<joint name="$(joint_name)_1" type="fixed">
+    <parent>$(vehicle_name_1)::base_link</parent>
+    <child>$(joint_name)::opp_link</child>
+    <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
+</joint>

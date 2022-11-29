@@ -1,6 +1,10 @@
 <launch>
-    <!-- Posix SITL environment launch script -->
     <!-- launchs PX4 SITL and spawns vehicle -->
+    <arg name="run_px4" default="true" />
+
+    <arg name="vehicle" default="uuv_hippocampus" />
+    <arg name="ID" default="0" />
+
     <!-- vehicle pose -->
     <arg name="x" default="0" />
     <arg name="y" default="0" />
@@ -9,24 +13,23 @@
     <arg name="P" default="0" />
     <arg name="Y" default="0" />
 
-    <arg name="run_px4" default="true" />
-    <!-- vehcile model and config -->
-    <arg name="est" default="ekf2" />
-    <arg name="vehicle" default="uuv_hippocampus" />
-    <arg name="ID" default="1" />
-    <env name="PX4_SIM_MODEL" value="$(arg vehicle)" />
-    <env name="PX4_ESTIMATOR" value="$(arg est)" />
     <arg name="mavlink_udp_port" default="$(eval 14560 + arg('ID'))" />
     <arg name="mavlink_tcp_port" default="$(eval 4560 + arg('ID'))" />
-    <!-- PX4 configs -->
-    <arg name="interactive" default="true" />
+
+    <group if="$(arg run_px4)" >
+        <!-- vehcile model and config -->
+        <arg name="est" default="ekf2" />
+        <!-- PX4 configs -->
+        <arg name="interactive" default="true" />
+
+        <include file="$(find hippocampus_sim)/launch/inc_run_px4_sitl.launch" pass_all_args="true" />
+    </group>
+
+
     <!-- generate sdf vehicle model -->
-    <arg name="cmd" default="xmlstarlet ed -d '//plugin[@name=&quot;mavlink_interface&quot;]/mavlink_tcp_port' -s '//plugin[@name=&quot;mavlink_interface&quot;]' -t elem -n mavlink_tcp_port -v $(arg mavlink_tcp_port) $(find hippocampus_sim)/models/$(arg vehicle)/$(arg vehicle).sdf" />
+    <arg name="cmd" default="xmlstarlet ed -d '//plugin[@name=&quot;mavlink_interface&quot;]/mavlink_tcp_port' -s '//plugin[@name=&quot;mavlink_interface&quot;]' -t elem -n mavlink_tcp_port -v $(arg mavlink_tcp_port)
+                                           -d '//plugin[@name=&quot;mavlink_interface&quot;]/mavlink_udp_port' -s '//plugin[@name=&quot;mavlink_interface&quot;]' -t elem -n mavlink_udp_port -v $(arg mavlink_udp_port) $(find hippocampus_sim)/models/$(arg vehicle)/$(arg vehicle).sdf" />
     <param command="$(arg cmd)" name="model_description" />
-    <!-- PX4 SITL -->
-    <arg unless="$(arg interactive)" name="px4_command_arg1" value="-d" />
-    <arg if="$(arg interactive)" name="px4_command_arg1" value="" />
-    <node if="$(arg run_px4)" name="sitl_$(arg ID)" pkg="px4" type="px4" output="screen" args="$(find px4)/ROMFS/px4fmu_common -s etc/init.d-posix/rcS -i $(arg ID) -w sitl_$(arg vehicle)_$(arg ID) $(arg px4_command_arg1)"></node>
     <!-- spawn vehicle -->
     <node name="$(arg vehicle)_$(arg ID)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-sdf -param model_description -model $(arg vehicle)_$(arg ID) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
 </launch>
