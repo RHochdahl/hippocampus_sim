@@ -205,7 +205,7 @@
             </inertia>
         </inertial>
         <visual name='rotor_0_visual'>
-            <pose>0 0 0 0 -1.570796 0</pose>
+            <pose>0 0 -0.045 0 -1.570796 0</pose>
             <geometry>
                 <mesh>
                     <scale>1 1 1</scale>
@@ -257,10 +257,10 @@
             </inertia>
         </inertial>
         <visual name='rotor_1_visual'>
-            <pose>0 0 0 0 -1.570796 0</pose>
+            <pose>0 0 -0.045 0 -1.570796 0</pose>
             <geometry>
                 <mesh>
-                    <scale>1 1 1</scale>
+                    <scale>1 -1 1</scale>
                     <uri>model://uuv_hippocampus/meshes/uuv_hippocampus_prop.stl</uri>
                 </mesh>
             </geometry>
@@ -309,7 +309,7 @@
             </inertia>
         </inertial>
         <visual name='rotor_2_visual'>
-            <pose>0 0 0 0 -1.570796 0</pose>
+            <pose>0 0 -0.045 0 -1.570796 0</pose>
             <geometry>
                 <mesh>
                     <scale>1 1 1</scale>
@@ -318,7 +318,7 @@
             </geometry>
             <material>
                 <script>
-                    <name>Gazebo/Blue</name>
+                    <name>Gazebo/DarkYellow</name>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
                 </script>
             </material>
@@ -361,10 +361,10 @@
             </inertia>
         </inertial>
         <visual name='rotor_3_visual'>
-            <pose>0 0 0 0 -1.570796 0</pose>
+            <pose>0 0 -0.045 0 -1.570796 0</pose>
             <geometry>
                 <mesh>
-                    <scale>1 1 1</scale>
+                    <scale>1 -1 1</scale>
                     <uri>model://uuv_hippocampus/meshes/uuv_hippocampus_prop.stl</uri>
                 </mesh>
             </geometry>
@@ -429,7 +429,7 @@
         <buoyancy>
             <link_name>base_link</link_name>
             <origin>0 0 0</origin>
-            <compensation>1.01</compensation>
+            <compensation>1.0217687347</compensation>
             <height_scale_limit>0.05</height_scale_limit>
         </buoyancy>
         <robotNamespace />
@@ -448,7 +448,7 @@
         <linkName>rotor_0</linkName>
         <turningDirection>ccw</turningDirection>
         <timeConstantUp>0.0125</timeConstantUp>
-        <timeConstantDown>0.025</timeConstantDown>
+        <timeConstantDown>0.0125</timeConstantDown>
         <maxRotVelocity>800</maxRotVelocity>
         <motorConstant>1.1e-05</motorConstant>
         <momentConstant>0.024</momentConstant>
@@ -466,7 +466,7 @@
         <linkName>rotor_1</linkName>
         <turningDirection>cw</turningDirection>
         <timeConstantUp>0.0125</timeConstantUp>
-        <timeConstantDown>0.025</timeConstantDown>
+        <timeConstantDown>0.0125</timeConstantDown>
         <maxRotVelocity>800</maxRotVelocity>
         <motorConstant>-1.1e-05</motorConstant>
         <momentConstant>0.024</momentConstant>
@@ -484,7 +484,7 @@
         <linkName>rotor_2</linkName>
         <turningDirection>ccw</turningDirection>
         <timeConstantUp>0.0125</timeConstantUp>
-        <timeConstantDown>0.025</timeConstantDown>
+        <timeConstantDown>0.0125</timeConstantDown>
         <maxRotVelocity>800</maxRotVelocity>
         <motorConstant>1.1e-05</motorConstant>
         <momentConstant>0.024</momentConstant>
@@ -502,7 +502,7 @@
         <linkName>rotor_3</linkName>
         <turningDirection>cw</turningDirection>
         <timeConstantUp>0.0125</timeConstantUp>
-        <timeConstantDown>0.025</timeConstantDown>
+        <timeConstantDown>0.0125</timeConstantDown>
         <maxRotVelocity>800</maxRotVelocity>
         <motorConstant>-1.1e-05</motorConstant>
         <momentConstant>0.024</momentConstant>
@@ -605,5 +605,10 @@
         <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
         <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
         <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
+    </plugin>
+
+    <plugin name='visual_target_plugin' filename='libgazebo_visual_pose_plugin.so'>
+        <robotNamespace />
+        <target_topic>target_pose</target_topic>
     </plugin>
 </model>

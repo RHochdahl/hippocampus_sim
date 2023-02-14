@@ -35,10 +35,18 @@ catkin_install_python(PROGRAMS
   scripts/generate_tag_models
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-                            
-                            
-add_library(gazebo_barometer_water_plugin plugins/gazebo_barometer_water_plugin.cpp)
-add_dependencies(gazebo_barometer_water_plugin ${catkin_EXPORTED_TARGETS})
-target_link_libraries(gazebo_barometer_water_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+
+
+file(GLOB_RECURSE PLUGIN_FILES
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/plugins"
+  "${CMAKE_CURRENT_SOURCE_DIR}/plugins/*.cpp"
+)
+
+foreach(PLUGIN_FILE ${PLUGIN_FILES})
+  string(REPLACE ".cpp" "" PLUGIN_NAME ${PLUGIN_FILE})
+  add_library(${PLUGIN_NAME} plugins/${PLUGIN_FILE})
+  add_dependencies(${PLUGIN_NAME} ${catkin_EXPORTED_TARGETS})
+  target_link_libraries(${PLUGIN_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+endforeach(PLUGIN_FILE ${PLUGIN_FILES})
 
 
