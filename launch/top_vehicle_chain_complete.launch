@@ -6,13 +6,12 @@
 
     <arg name="num_vehicles" default="2" />
 
-    <arg name="x" default="0.3" />
-    <arg name="y" default="0.8" />
-    <arg name="z" default="0.0" />
+    <arg name="x" default="0.85" />
+    <arg name="y" default="2.5" />
+    <arg name="z" default="-0.5" />
     <arg name="Y" default="1.57" />
     <arg name="P" default="0.0" />
     <arg name="R" default="0.0" />
-    
 
     <!-- start gazebo with the specified world -->
     <include file="$(find hippocampus_sim)/launch/top_environment.launch">
