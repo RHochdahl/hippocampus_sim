@@ -29,6 +29,11 @@
                 <arg name="tgt_system" value="$(eval 1 + arg('ID'))" />
                 <arg name="tgt_component" value="1" />
             </include>
+            <node pkg="hippocampus_common" type="auto_offboard_node" name="auto_offboard" output="screen" />
+            <include file="$(find hippocampus_common)/launch/node_tf_publisher.launch" >
+                <arg name="vehicle_name" value="$(arg vehicle_name)" />
+                <arg name="vehicle_type" value="hippocampus" />
+            </include>
         </group>
     
         <include file="$(find hippocampus_sim)/launch/recursive_vehicle_complete.launch">
