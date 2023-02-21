@@ -6,7 +6,7 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo/msgs/msgs.hh>
 #include <ignition/math.hh>
-#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <ros/ros.h>
 
 namespace gazebo
@@ -47,7 +47,7 @@ namespace gazebo
         geometry_msgs::Pose latest_pose;
         bool has_new_pose;
 
-        void callback(const geometry_msgs::Pose& msg);
+        void callback(const geometry_msgs::PoseStamped& msg);
     };
 } // namespace gazebo
 

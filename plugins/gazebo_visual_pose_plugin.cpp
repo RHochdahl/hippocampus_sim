@@ -148,9 +148,9 @@ namespace gazebo
         has_new_pose = false;
     }
 
-    void VisualPosePlugin::callback(const geometry_msgs::Pose& msg)
+    void VisualPosePlugin::callback(const geometry_msgs::PoseStamped& msg)
     {
-        latest_pose = msg;
+        latest_pose = msg.pose;
         has_new_pose = true;
     }
 } // namespace gazebo
