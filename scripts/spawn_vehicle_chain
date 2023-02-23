@@ -76,7 +76,7 @@ class VehicleChainConstructor:
         sys.stdout.write(sdf)
 
     def __getName(self, prefix, id):
-        return prefix + str(id).zfill(len(str( self.__numVehicles)))
+        return prefix + str(id).zfill(max(2, len(str(self.__numVehicles-1))))
 
     def __pose2Str(self, pose):
         poseStr = str(pose[0])

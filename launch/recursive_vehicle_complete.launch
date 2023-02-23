@@ -10,7 +10,7 @@
 
     <group if="$(eval arg('ID') &#60; arg('num_vehicles'))" >
 
-        <arg name="vehicle_name" value="$(eval 'uuv' + str(arg('ID')).zfill(len(str(arg('num_vehicles')))))" />
+        <arg name="vehicle_name" value="$(eval 'uuv' + str(arg('ID')).zfill(max(2, len(str(arg('num_vehicles'))))))" />
 
         <!-- use the group tag to launch nodes in a namespace -->
         <group ns="$(arg vehicle_name)">
