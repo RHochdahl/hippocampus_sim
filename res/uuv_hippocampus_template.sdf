@@ -1,4 +1,5 @@
 <model name="$(vehicle_name)">
+    <static>$(static)</static>
     <pose>$(vehicle_pose)</pose>
 
     <link name="base_link">

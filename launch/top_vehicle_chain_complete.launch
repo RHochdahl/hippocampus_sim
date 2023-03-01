@@ -3,6 +3,7 @@
     <arg name="gui" default="true" />
     <arg name="verbose" default="true" />
     <arg name="rviz" default="false" />
+    <arg name="fix_base" default="false" />
 
     <arg name="num_vehicles" default="2" />
 
@@ -28,8 +29,8 @@
 
     <node if="$(arg rviz)" name="rviz_visualizer" pkg="hippocampus_sim" type="rviz_visualizer_node" output="screen" />
 
-
-    <arg name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles)" />
+    <arg if="$(arg fix_base)"       name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles) -f" />
+    <arg unless="$(arg fix_base)"   name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles)" />
     <param command="$(arg cmd)" name="model_description" />
 
     <arg name="vehicle" value="uuv_hippocampus_chain" />

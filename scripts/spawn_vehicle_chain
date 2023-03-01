@@ -18,6 +18,7 @@ class VehicleChainConstructor:
     __robot2Joint = -0.19
     __robot2Robot = -0.55
     __numVehicles = 2
+    __fixed = False
 
 
     def __init__(self, args):
@@ -25,6 +26,9 @@ class VehicleChainConstructor:
             if (args[0] == "-n"):
                 self.__numVehicles = int(args[1])
                 del args[:1]
+            elif (args[0] == "-f"):
+                self.__fixed = True
+                del args[0]
             else:
                 del args[0]
 
@@ -40,6 +44,7 @@ class VehicleChainConstructor:
     def __addVehicle(self, id):
         """
         to be modified:
+            $(static)
             $(vehicle_name)
             $(vehicle_pose)
             $(mavlink_tcp_port)
@@ -50,6 +55,10 @@ class VehicleChainConstructor:
         tcp = self.__startTCP + id
         udp = self.__startUDP + id
         pose = id * self.__robot2Robot * np.array([1, 0, 0, 0, 0, 0])
+        if (self.__fixed and (id == 0)):
+            sdf = sdf.replace("$(static)", "true")
+        else:
+            sdf = sdf.replace("$(static)", "false")
         sdf = sdf.replace("$(vehicle_name)", name)
         sdf = sdf.replace("$(vehicle_pose)", self.__pose2Str(pose))
         sdf = sdf.replace("$(mavlink_tcp_port)", str(tcp))
