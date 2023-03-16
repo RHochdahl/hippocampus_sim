@@ -4,13 +4,15 @@
         Note that "num_vehicles" is not necessarily the number of vehicles but the maximum vehicle ID minus 1
     -->
 
-    <arg name="ID" default="0" />
+    <arg name="idx" default="0" />
     <arg name="num_vehicles" />
+    <arg name="vehicles" default="$(eval ' '.join(['uuv' + str(idx).zfill(2) for idx in range(arg('num_vehicles'))]))" />
 
 
-    <group if="$(eval arg('ID') &#60; arg('num_vehicles'))" >
+    <group if="$(eval arg('idx') &#60; arg('num_vehicles'))" >
 
-        <arg name="vehicle_name" value="$(eval 'uuv' + str(arg('ID')).zfill(max(2, len(str(arg('num_vehicles'))))))" />
+        <arg name="vehicle_name" value="$(eval arg('vehicles').split()[arg('idx')])" />
+        <arg name="ID" value="$(eval int(arg('vehicle_name')[-2:]))" />
 
         <!-- use the group tag to launch nodes in a namespace -->
         <group ns="$(arg vehicle_name)">
@@ -37,8 +39,9 @@
         </group>
     
         <include file="$(find hippocampus_sim)/launch/recursive_vehicle_complete.launch">
-            <arg name="ID" value="$(eval arg('ID') + 1)" />
+            <arg name="idx" value="$(eval arg('idx') + 1)" />
             <arg name="num_vehicles" value="$(arg num_vehicles)" />
+            <arg name="vehicles" value="$(arg vehicles)" />
         </include>
 
     </group>

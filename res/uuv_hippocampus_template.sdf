@@ -83,6 +83,7 @@
         <child>barometer_water_link</child>
     </joint>
 
+<!--
     <link name="vertical_camera/camera_link">
         <gravity>0</gravity>
         <pose>0.05 0 -0.02 0 1.57 0</pose>
@@ -140,6 +141,7 @@
         <parent>base_link</parent>
         <child>vertical_camera/camera_link</child>
     </joint>
+-->
 
     <!--
     A new link is defined which hold the IMU (e.g. acceleration sensors, ...). For the simulation it is positioned
@@ -608,8 +610,10 @@
         <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
     </plugin>
 
+<!--
     <plugin name='visual_target_plugin' filename='libgazebo_visual_pose_plugin.so'>
         <robotNamespace />
         <target_topic>target_pose</target_topic>
     </plugin>
+-->
 </model>

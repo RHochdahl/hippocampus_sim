@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <sdf version="1.6">
-    <model name="uuv_hippocampus_joint">
+    <model name="uuv_hippocampus_revolute_joint">
         <link name="base_link">
             <pose>0.0 0.0 0.0 0 0 0</pose>
             <visual name="base_link_visual">
@@ -8,7 +8,7 @@
                 <geometry>
                     <mesh>
                         <scale>1e-3 1e-3 1e-3</scale>
-                        <uri>model://uuv_hippocampus_joint/meshes/uuv_hippocampus_joint.stl</uri>
+                        <uri>model://uuv_hippocampus_revolute_joint/meshes/uuv_hippocampus_joint.stl</uri>
                     </mesh>
                 </geometry>
                 <material>
@@ -27,7 +27,7 @@
                 <geometry>
                     <mesh>
                         <scale>1e-3 1e-3 1e-3</scale>
-                        <uri>model://uuv_hippocampus_joint/meshes/uuv_hippocampus_joint.stl</uri>
+                        <uri>model://uuv_hippocampus_revolute_joint/meshes/uuv_hippocampus_joint.stl</uri>
                     </mesh>
                 </geometry>
                 <material>

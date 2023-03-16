@@ -18,6 +18,7 @@ class VehicleChainConstructor:
     __robot2Joint = -0.19
     __robot2Robot = -0.55
     __numVehicles = 2
+    __vehicles = []
     __fixed = False
 
 
@@ -29,8 +30,21 @@ class VehicleChainConstructor:
             elif (args[0] == "-f"):
                 self.__fixed = True
                 del args[0]
+            elif (args[0] == "-v"):
+                del args[0]
+                while (len(args) > 0):
+                    if args[0].startswith('-'):
+                        break
+                    self.__vehicles.append(args[0])
+                    del args[0]
             else:
                 del args[0]
+
+        if len(self.__vehicles) > 0:
+            self.__numVehicles = len(self.__vehicles)
+        else:
+            for id in range(self.__numVehicles):
+                self.__vehicles.append(self.__getName("uuv", id))
 
         self.__loadTemplates()
         self.__writeSDF()
@@ -41,7 +55,7 @@ class VehicleChainConstructor:
         self.__sdfTemplateJoint = open(self.__sdfPathJoint, "r").read()
         self.__sdfTemplateFrame = open(self.__sdfPathFrame, "r").read()
 
-    def __addVehicle(self, id):
+    def __addVehicle(self, idx):
         """
         to be modified:
             $(static)
@@ -51,11 +65,12 @@ class VehicleChainConstructor:
             $(mavlink_udp_port)
         """
         sdf = self.__sdfTemplateRobot
-        name = self.__getName('uuv', id)
+        name = self.__vehicles[idx]
+        id = self.__getID(name)
         tcp = self.__startTCP + id
         udp = self.__startUDP + id
-        pose = id * self.__robot2Robot * np.array([1, 0, 0, 0, 0, 0])
-        if (self.__fixed and (id == 0)):
+        pose = idx * self.__robot2Robot * np.array([1, 0, 0, 0, 0, 0])
+        if (self.__fixed and (idx == 0)):
             sdf = sdf.replace("$(static)", "true")
         else:
             sdf = sdf.replace("$(static)", "false")
@@ -65,27 +80,37 @@ class VehicleChainConstructor:
         sdf = sdf.replace("$(mavlink_udp_port)", str(udp))
         sys.stdout.write(sdf)
 
-    def __addJoint(self, id, nextId):
+    def __addJoint(self, idx, type="revolute"):
         """
         to be modified:
+            $(joint_type)
             $(joint_name)
             $(joint_pose)
             $(vehicle_name_0)
             $(vehicle_name_1)
         """
         sdf = self.__sdfTemplateJoint
-        name = self.__getName('joint', id)
-        prevRobotName = self.__getName('uuv', id)
-        nextRobotName = self.__getName('uuv', nextId)
-        pose = (id * self.__robot2Robot + self.__robot2Joint) * np.array([1, 0, 0, 0, 0, 0]) + np.array([0, 0, 0, 0, 0, np.pi])
+        name = self.__getName('joint', idx)
+        prevRobotName = self.__vehicles[idx]
+        nextRobotName = self.__vehicles[idx+1]
+        pose = (idx * self.__robot2Robot + self.__robot2Joint) * np.array([1, 0, 0, 0, 0, 0]) + np.array([0, 0, 0, 0, 0, np.pi])
         sdf = sdf.replace("$(joint_name)", name)
+        sdf = sdf.replace("$(joint_type)", type)
         sdf = sdf.replace("$(joint_pose)", self.__pose2Str(pose))
         sdf = sdf.replace("$(vehicle_name_0)", prevRobotName)
         sdf = sdf.replace("$(vehicle_name_1)", nextRobotName)
         sys.stdout.write(sdf)
 
     def __getName(self, prefix, id):
-        return prefix + str(id).zfill(max(2, len(str(self.__numVehicles-1))))
+        return prefix + str(id).zfill(2)
+    
+    def __getID(self, name):
+        id = ""
+        for c in reversed(name):
+            if not str.isdigit(c):
+                break
+            id += c
+        return int(id[::-1])
 
     def __pose2Str(self, pose):
         poseStr = str(pose[0])
@@ -101,9 +126,9 @@ class VehicleChainConstructor:
         sys.stdout.write(frameLines[0])
 
         self.__addVehicle(0)
-        for vehicleID in range(1,  self.__numVehicles):
-            self.__addVehicle(vehicleID)
-            self.__addJoint(vehicleID-1, vehicleID)
+        for idx in range(1,  self.__numVehicles):
+            self.__addVehicle(idx)
+            self.__addJoint(idx-1)
 
         sys.stdout.write(frameLines[1])
 

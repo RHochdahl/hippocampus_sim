@@ -1,6 +1,6 @@
 <include>
     <name>$(joint_name)</name>
-    <uri>model://uuv_hippocampus_joint</uri>
+    <uri>model://uuv_hippocampus_$(joint_type)_joint</uri>
     <pose>$(joint_pose)</pose>
 </include>
 

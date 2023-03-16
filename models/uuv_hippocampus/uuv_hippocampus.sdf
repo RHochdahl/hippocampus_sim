@@ -177,23 +177,9 @@
         </link>
 
         <!-- IMU joint -->
-        <joint name='uuv_hippocampus/imu_joint' type='revolute'>
+        <joint name='uuv_hippocampus/imu_joint' type='fixed'>
             <child>uuv_hippocampus/imu_link</child>
             <parent>base_link</parent>
-            <axis>
-                <xyz>1 0 0</xyz>
-                <limit>
-                    <lower>0</lower>
-                    <upper>0</upper>
-                    <effort>0</effort>
-                    <velocity>0</velocity>
-                </limit>
-                <dynamics>
-                    <spring_reference>0</spring_reference>
-                    <spring_stiffness>0</spring_stiffness>
-                </dynamics>
-                <use_parent_model_frame>1</use_parent_model_frame>
-            </axis>
         </joint>
 
         <!--

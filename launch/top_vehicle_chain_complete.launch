@@ -4,8 +4,10 @@
     <arg name="verbose" default="true" />
     <arg name="rviz" default="false" />
     <arg name="fix_base" default="false" />
+    <arg name="spawn" default="true" />
 
-    <arg name="num_vehicles" default="2" />
+    <arg name="vehicles" default="" />
+    <arg name="num_vehicles" default="$(eval len(arg('vehicles').split()))" />
 
     <arg name="x" default="0.85" />
     <arg name="y" default="2.5" />
@@ -24,18 +26,19 @@
     <!-- start sitl for all vehicles -->
     <include file="$(find hippocampus_sim)/launch/recursive_vehicle_complete.launch">
         <arg name="num_vehicles" value="$(arg num_vehicles)" />
+        <arg if="$(eval bool(len(arg('vehicles'))))" name="vehicles" value="$(arg vehicles)" />
     </include>
 
 
     <node if="$(arg rviz)" name="rviz_visualizer" pkg="hippocampus_sim" type="rviz_visualizer_node" output="screen" />
 
-    <arg if="$(arg fix_base)"       name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles) -f" />
-    <arg unless="$(arg fix_base)"   name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles)" />
-    <param command="$(arg cmd)" name="model_description" />
+    <group if="$(arg spawn)">
+        <arg if="$(arg fix_base)"       name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles) -v $(arg vehicles) -f" />
+        <arg unless="$(arg fix_base)"   name="cmd" default="$(find hippocampus_sim)/scripts/spawn_vehicle_chain -n $(arg num_vehicles) -v $(arg vehicles)" />
+        <param command="$(arg cmd)" name="model_description" />
 
-    <arg name="vehicle" value="uuv_hippocampus_chain" />
+        <arg name="vehicle" value="uuv_hippocampus_chain" />
 
-    <node name="$(arg vehicle)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-sdf -param model_description -model uuv_hippocampus_chain -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
-
-
+        <node name="$(arg vehicle)_spawn" output="screen" pkg="gazebo_ros" type="spawn_model" args="-sdf -param model_description -model uuv_hippocampus_chain -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)" />
+    </group>
 </launch>
